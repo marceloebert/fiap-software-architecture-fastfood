@@ -6,6 +6,7 @@ import com.fiap.lanchonete.application.orders.usecases.GetAllOrdersUseCase;
 import com.fiap.lanchonete.application.orders.usecases.GetOrderByIdUseCase;
 import com.fiap.lanchonete.application.orders.usecases.UpdateOrderStateUseCase;
 import com.fiap.lanchonete.application.orders.gateways.OrderGateway;
+import com.fiap.lanchonete.application.payments.gateways.PaymentGateway;
 import com.fiap.lanchonete.application.products.gateways.ProductGateway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,8 +15,8 @@ import org.springframework.context.annotation.Configuration;
 public class OrderConfiguration {
 
     @Bean
-    public CreateOrderUseCase createOrderUseCase(OrderGateway orderGateway, ProductGateway productGateway, CustomerGateway customerGateway) {
-        return new CreateOrderUseCase(orderGateway, productGateway,customerGateway);
+    public CreateOrderUseCase createOrderUseCase(OrderGateway orderGateway, ProductGateway productGateway, CustomerGateway customerGateway, PaymentGateway paymentGateway) {
+        return new CreateOrderUseCase(orderGateway, productGateway,customerGateway,paymentGateway);
     }
 
     @Bean

@@ -2,7 +2,7 @@ package com.fiap.lanchonete.application.orders.usecases;
 
 import com.fiap.lanchonete.application.orders.gateways.OrderGateway;
 import com.fiap.lanchonete.entities.orders.Order;
-import com.fiap.lanchonete.entities.payment.Payment;
+import com.fiap.lanchonete.entities.payments.Payment;
 
 import java.util.UUID;
 

@@ -68,7 +68,7 @@ public class OrderItem {
 
     public void setProduct(Product product) {
         this.product = product;
-        this.totalPrice = calculateTotalPrice();  // Recalcula o preço com o produto definido
+        this.totalPrice = calculateTotalPrice();
     }
 
 }

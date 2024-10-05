@@ -5,7 +5,7 @@ import com.fiap.lanchonete.entities.orders.OrderItem;
 import com.fiap.lanchonete.entities.orders.enums.OrderState;
 import com.fiap.lanchonete.entities.orders.enums.PaymentConfirmationStatus;
 import com.fiap.lanchonete.infrastructure.customers.entity.CustomerEntity;
-import com.fiap.lanchonete.infrastructure.payment.entity.PaymentEntity;
+import com.fiap.lanchonete.infrastructure.payments.entity.PaymentEntity;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -48,8 +48,7 @@ public class OrderEntity {
         this.customer = new CustomerEntity(order.getCustomer());
         this.state = order.getState();
         this.totalPrice = order.getTotalPrice();
-        this.paymentConfirmationStatus = order.getPaymentConfirmationStatus();
-        this.payment = order.getPayment() != null ? new PaymentEntity(order.getPayment()) : null; // Usando PaymentEntity
+        this.payment = order.getPayment() != null ? new PaymentEntity(order.getPayment()) : null;
         this.creationTime = order.getCreationTime();
         this.items = order.getItems().stream()
                 .map(item -> new OrderItemEntity(item, this))
@@ -57,25 +56,23 @@ public class OrderEntity {
     }
 
     public Order toOrder() {
-        // Converte a lista de OrderItemEntity para OrderItem
         List<OrderItem> orderItems = this.items.stream()
                 .map(OrderItemEntity::toOrderItem)
                 .toList();
 
-        // Cria um novo objeto Order com todos os campos necessários
+
         return new Order(
-                this.id, // UUID da ordem
-                this.customer.toCustomer(), // Conversão de CustomerEntity para Customer
-                orderItems, // Lista de itens do pedido
-                this.state, // Estado atual do pedido
-                this.totalPrice, // Preço total já calculado
-                this.paymentConfirmationStatus, // Status da confirmação de pagamento
-                this.payment != null ? this.payment.toPayment() : null, // Conversão do PaymentEntity para Payment
-                this.creationTime // Data de criação do pedido
+                this.id,
+                this.customer.toCustomer(),
+                orderItems,
+                this.state,
+                this.totalPrice,
+                this.paymentConfirmationStatus,
+                this.payment != null ? this.payment.toPayment() : null,
+                this.creationTime
         );
     }
 
-    // Getters e Setters
     public UUID getId() {
         return id;
     }
