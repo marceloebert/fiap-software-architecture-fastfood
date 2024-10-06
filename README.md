@@ -68,7 +68,7 @@ Este projeto é um sistema de pedido desenvolvido em Java Spring Boot, que permi
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/frbastos/fiap-software-architecture-lanchonete.git
+   git clone https://github.com/marceloebert/fiap-software-architecture-fastfood.git
    cd lanchonete
 
 3. Suba o ambiente:
@@ -94,12 +94,11 @@ http://localhost:8080/swagger-ui.html
 
 ### Documentação complementar do projeto
 
-- https://global-gorilla-13f.notion.site/FIAP-Projeto-Lanchonete-26bfdcca5de84ce8974cbfad8286dcc2
-- https://miro.com/app/board/uXjVK3DvRAo=/?share_link_id=212036327976
+- https://miro.com/app/board/uXjVKgPn08g=/?share_link_id=309607043599
 
 ### Licença
 
-Este projeto está licenciado sob a MIT License.
+
 
 
 
