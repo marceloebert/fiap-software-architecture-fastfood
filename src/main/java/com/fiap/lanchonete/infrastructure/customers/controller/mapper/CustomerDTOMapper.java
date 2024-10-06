@@ -10,15 +10,21 @@ public class CustomerDTOMapper {
 
     public Customer toCustomer(CustomerRequest customerRequest) {
         return new Customer(
-                null,  // O ID pode ser gerado posteriormente no Use Case ou no banco de dados
+                null,
                 customerRequest.getName(),
                 customerRequest.getDocument(),
                 customerRequest.getMail()
         );
     }
 
-    public CustomerResponse toResponse(Customer customer) {
-        if(customer == null) return null;
-        return new CustomerResponse(customer.getId(), customer.getName(), customer.getDocument(), customer.getMail());
+    public CustomerResponse toCustomerResponse(Customer customer) {
+        return new CustomerResponse(
+                customer.getId(),
+                customer.getName(),
+                customer.getDocument(),
+                customer.getMail()
+        );
     }
+
+
 }

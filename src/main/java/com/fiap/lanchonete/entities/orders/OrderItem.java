@@ -19,12 +19,14 @@ public class OrderItem {
         this.productId = productId;
         this.quantity = quantity;
         this.observation = observation;
+        this.totalPrice = calculateTotalPrice();
     }
 
     public OrderItem(UUID productId, int quantity, String observation) {
         this.productId = productId;
         this.quantity = quantity;
         this.observation = observation;
+        this.totalPrice = calculateTotalPrice();
     }
 
     public OrderItem(UUID id, Product product, int quantity, String observation) {
@@ -32,6 +34,7 @@ public class OrderItem {
         this.product = product;
         this.quantity = quantity;
         this.observation = observation;
+        this.totalPrice = calculateTotalPrice();
     }
 
     public UUID getId() {
@@ -70,5 +73,4 @@ public class OrderItem {
         this.product = product;
         this.totalPrice = calculateTotalPrice();
     }
-
 }

@@ -1,9 +1,9 @@
-package com.fiap.lanchonete.infrastructure.payments.dto;
+package com.fiap.lanchonete.infrastructure.payments.controller.dto;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class CreatePaymentRequestDTO {
+public class CreatePaymentRequest {
     private UUID orderId;
     private BigDecimal amount;
 

@@ -6,6 +6,7 @@ import com.fiap.lanchonete.application.orders.usecases.GetOrderByIdUseCase;
 import com.fiap.lanchonete.application.orders.usecases.UpdateOrderStateUseCase;
 import com.fiap.lanchonete.entities.orders.Order;
 import com.fiap.lanchonete.infrastructure.orders.controller.dto.OrderRequest;
+import com.fiap.lanchonete.infrastructure.orders.controller.dto.OrderResponse;
 import com.fiap.lanchonete.infrastructure.orders.controller.dto.UpdateOrderStateRequest;
 import com.fiap.lanchonete.infrastructure.orders.controller.mapper.OrderDTOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/orders")
@@ -39,29 +41,34 @@ public class OrderApi {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Order> createOrder(@RequestBody OrderRequest orderRequest) {
+    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest orderRequest) {
         Order order = orderDTOMapper.toOrder(orderRequest);
         Order createdOrder = createOrderUseCase.createOrder(order, orderRequest.getDocument());
-        return ResponseEntity.ok(createdOrder);
+        OrderResponse response = orderDTOMapper.toOrderResponse(createdOrder);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<Order>> getAllOrders() {
+    public ResponseEntity<List<OrderResponse>> getAllOrders() {
         List<Order> orders = getAllOrdersUseCase.getAll();
-        return ResponseEntity.ok(orders);
+        List<OrderResponse> orderResponses = orders.stream()
+                .map(orderDTOMapper::toOrderResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(orderResponses);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrderById(@PathVariable UUID id) {
+    public ResponseEntity<OrderResponse> getOrderById(@PathVariable UUID id) {
         return getOrderByIdUseCase.getOrderById(id)
-                .map(ResponseEntity::ok)
+                .map(order -> ResponseEntity.ok(orderDTOMapper.toOrderResponse(order)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}/state")
-    public ResponseEntity<Order> updateOrderState(@PathVariable UUID id, @RequestBody UpdateOrderStateRequest updateOrderStateRequest) {
+    public ResponseEntity<OrderResponse> updateOrderState(@PathVariable UUID id, @RequestBody UpdateOrderStateRequest updateOrderStateRequest) {
         String newState = updateOrderStateRequest.getNewState();
         Order updatedOrder = updateOrderStateUseCase.updateOrderState(id, newState);
-        return ResponseEntity.ok(updatedOrder);
+        OrderResponse response = orderDTOMapper.toOrderResponse(updatedOrder);
+        return ResponseEntity.ok(response);
     }
 }

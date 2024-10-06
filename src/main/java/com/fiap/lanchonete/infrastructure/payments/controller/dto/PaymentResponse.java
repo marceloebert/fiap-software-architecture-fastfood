@@ -1,11 +1,13 @@
-package com.fiap.lanchonete.entities.payments;
+package com.fiap.lanchonete.infrastructure.payments.controller.dto;
+
 import com.fiap.lanchonete.entities.payments.enums.PaymentStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class Payment {
+public class PaymentResponse {
+
     private UUID id;
     private UUID orderId;
     private String qrCode;
@@ -14,16 +16,7 @@ public class Payment {
     private BigDecimal amount;
     private String transactionId;
 
-    public Payment(UUID orderId, BigDecimal amount, String qrCode, PaymentStatus status, LocalDateTime paymentDate, String transactionId) {
-        this.orderId = orderId;
-        this.amount = amount;
-        this.qrCode = qrCode;
-        this.status = status;
-        this.transactionId = transactionId;
-        this.paymentDate = paymentDate;
-    }
-
-
+    // Getters e Setters
     public UUID getId() {
         return id;
     }
@@ -34,6 +27,10 @@ public class Payment {
 
     public UUID getOrderId() {
         return orderId;
+    }
+
+    public void setOrderId(UUID orderId) {
+        this.orderId = orderId;
     }
 
     public String getQrCode() {
@@ -56,7 +53,7 @@ public class Payment {
         return paymentDate;
     }
 
-    public void setLocalDateTime(LocalDateTime paymentDate) {
+    public void setPaymentDate(LocalDateTime paymentDate) {
         this.paymentDate = paymentDate;
     }
 
@@ -64,7 +61,7 @@ public class Payment {
         return amount;
     }
 
-    public void setAmount(BigDecimal amount ) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
@@ -74,15 +71,5 @@ public class Payment {
 
     public void setTransactionId(String transactionId) {
         this.transactionId = transactionId;
-    }
-
-    public void approve(String transactionId) {
-        this.status = PaymentStatus.APPROVED;
-        this.paymentDate = LocalDateTime.now();
-        this.transactionId = transactionId;
-    }
-
-    public boolean isPending() {
-        return this.status == PaymentStatus.PENDING;
     }
 }

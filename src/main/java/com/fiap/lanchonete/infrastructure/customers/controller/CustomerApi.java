@@ -4,6 +4,7 @@ import com.fiap.lanchonete.application.customers.usecases.RegisterCustomerUseCas
 import com.fiap.lanchonete.application.customers.usecases.FindCustomerUseCase;
 import com.fiap.lanchonete.entities.customers.Customer;
 import com.fiap.lanchonete.infrastructure.customers.controller.dto.CustomerRequest;
+import com.fiap.lanchonete.infrastructure.customers.controller.dto.CustomerResponse;
 import com.fiap.lanchonete.infrastructure.customers.controller.mapper.CustomerDTOMapper;
 import com.fiap.lanchonete.crosscutting.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,16 +31,18 @@ public class CustomerApi {
     }
 
     @PostMapping
-    public ResponseEntity<Customer> saveCustomer(@RequestBody @jakarta.validation.Valid CustomerRequest customerRequest) {
+    public ResponseEntity<CustomerResponse> saveCustomer(@RequestBody @jakarta.validation.Valid CustomerRequest customerRequest) {
         Customer customerObjDomain = customerDTOMapper.toCustomer(customerRequest);
         Customer savedCustomer = registerCustomerUseCase.save(customerObjDomain);
-        return ResponseEntity.ok(savedCustomer);
+        CustomerResponse response = customerDTOMapper.toCustomerResponse(savedCustomer);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{document}")
-    public ResponseEntity<Customer> findCustomer(@PathVariable String document) {
+    public ResponseEntity<CustomerResponse> findCustomer(@PathVariable String document) {
         Optional<Customer> customer = findCustomerUseCase.findCustomer(document);
         Customer foundCustomer = customer.orElseThrow(NotFoundException::new);
-        return ResponseEntity.ok(foundCustomer);
+        CustomerResponse response = customerDTOMapper.toCustomerResponse(foundCustomer);
+        return ResponseEntity.ok(response);
     }
 }

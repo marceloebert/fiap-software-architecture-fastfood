@@ -4,6 +4,7 @@ import com.fiap.lanchonete.application.orders.usecases.UpdateOrderStateUseCase;
 import com.fiap.lanchonete.application.payments.gateways.PaymentGateway;
 import com.fiap.lanchonete.application.payments.usecases.ApprovePaymentUseCase;
 import com.fiap.lanchonete.application.payments.usecases.CreatePaymentUseCase;
+import com.fiap.lanchonete.infrastructure.payments.controller.mapper.PaymentDTOMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,9 +12,11 @@ import org.springframework.context.annotation.Configuration;
 public class PaymentConfiguration {
 
     private final PaymentGateway paymentGateway;
+    private final UpdateOrderStateUseCase updateOrderStateUseCase;
 
-    public PaymentConfiguration(PaymentGateway paymentGateway) {
+    public PaymentConfiguration(PaymentGateway paymentGateway, UpdateOrderStateUseCase updateOrderStateUseCase) {
         this.paymentGateway = paymentGateway;
+        this.updateOrderStateUseCase = updateOrderStateUseCase;
     }
 
     @Bean
@@ -22,7 +25,12 @@ public class PaymentConfiguration {
     }
 
     @Bean
-    public ApprovePaymentUseCase approvePaymentUseCase(PaymentGateway paymentGateway, UpdateOrderStateUseCase updateOrderStateUseCase) {
+    public ApprovePaymentUseCase approvePaymentUseCase() {
         return new ApprovePaymentUseCase(paymentGateway, updateOrderStateUseCase);
+    }
+
+    @Bean
+    public PaymentDTOMapper paymentDTOMapper() {
+        return new PaymentDTOMapper();
     }
 }

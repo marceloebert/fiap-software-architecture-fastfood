@@ -1,10 +1,12 @@
-package com.fiap.lanchonete.infrastructure.payments.dto;
+package com.fiap.lanchonete.infrastructure.payments.controller.dto;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
-public class PaymentApprovalRequestDTO {
+public class PaymentApprovalRequest {
     private UUID paymentId;
     private String transactionId;
+    private BigDecimal amount;
 
     // Getters e Setters
     public UUID getPaymentId() {
@@ -21,5 +23,13 @@ public class PaymentApprovalRequestDTO {
 
     public void setTransactionId(String transactionId) {
         this.transactionId = transactionId;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 }

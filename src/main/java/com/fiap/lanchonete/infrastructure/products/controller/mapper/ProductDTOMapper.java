@@ -2,6 +2,7 @@ package com.fiap.lanchonete.infrastructure.products.controller.mapper;
 
 import com.fiap.lanchonete.entities.products.Product;
 import com.fiap.lanchonete.infrastructure.products.controller.dto.ProductRequest;
+import com.fiap.lanchonete.infrastructure.products.controller.dto.ProductResponse;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -9,23 +10,30 @@ import java.util.UUID;
 @Component
 public class ProductDTOMapper {
 
-    // Método para criar um novo produto com um UUID gerado
     public Product toProductForCreation(ProductRequest productRequest) {
         return new Product(
-                UUID.randomUUID(),  // Gera um novo UUID
+                UUID.randomUUID(),
                 productRequest.getDescription(),
                 productRequest.getPrice(),
                 com.fiap.lanchonete.entities.products.enums.Category.valueOf(productRequest.getCategory())
         );
     }
 
-    // Método para atualização, que usa o ID existente
     public Product toProductForUpdate(ProductRequest productRequest, UUID id) {
         return new Product(
-                id,  // Usa o ID existente
+                id,
                 productRequest.getDescription(),
                 productRequest.getPrice(),
                 com.fiap.lanchonete.entities.products.enums.Category.valueOf(productRequest.getCategory())
         );
+    }
+
+    public ProductResponse toProductResponse(Product product) {
+        ProductResponse dto = new ProductResponse();
+        dto.setId(product.getId());
+        dto.setCategory(product.getCategory());
+        dto.setDescription(product.getDescription());
+        dto.setPrice(product.getPrice());
+        return dto;
     }
 }

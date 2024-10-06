@@ -51,7 +51,7 @@ public class Order {
 
     private BigDecimal calculateTotalPrice() {
         return items.stream()
-                .filter(item -> item != null && item.getProduct() != null && item.getTotalPrice() != null) // Filtro para evitar nulos
+                .filter(item -> item != null && item.getProduct() != null && item.getTotalPrice() != null)
                 .map(OrderItem::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
@@ -80,7 +80,6 @@ public class Order {
     public BigDecimal getTotalPrice() {
         return totalPrice;
     }
-
 
     public Payment getPayment() {
         return payment;

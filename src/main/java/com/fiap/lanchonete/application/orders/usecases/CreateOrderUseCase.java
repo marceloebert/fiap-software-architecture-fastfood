@@ -58,15 +58,13 @@ public class CreateOrderUseCase {
                 })
                 .collect(Collectors.toList());
 
-        //Order validatedOrder = new Order(customer, validatedItems);
-        //return orderGateway.save(validatedOrder);
 
         Order validatedOrder = new Order(customer, validatedItems);
         Order savedOrder = orderGateway.save(validatedOrder);
 
         BigDecimal totalAmount = savedOrder.getTotalPrice();
 
-        Payment payment = new Payment(savedOrder.getId(), totalAmount,"SimulatedQRCode_" + UUID.randomUUID(),PaymentStatus.PENDING, LocalDateTime.now(),null);
+        Payment payment = new Payment(savedOrder.getId(), totalAmount,"SimulatedQRCode_" + UUID.randomUUID(),PaymentStatus.PENDING, null,null);
         Payment savedPayment = paymentGateway.save(payment);
 
         savedOrder.setPayment(savedPayment);

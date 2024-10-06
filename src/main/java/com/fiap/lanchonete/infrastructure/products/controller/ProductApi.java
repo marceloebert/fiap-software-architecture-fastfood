@@ -3,6 +3,7 @@ package com.fiap.lanchonete.infrastructure.products.controller;
 import com.fiap.lanchonete.application.products.usecases.*;
 import com.fiap.lanchonete.entities.products.Product;
 import com.fiap.lanchonete.infrastructure.products.controller.dto.ProductRequest;
+import com.fiap.lanchonete.infrastructure.products.controller.dto.ProductResponse;
 import com.fiap.lanchonete.infrastructure.products.controller.mapper.ProductDTOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/products")
@@ -42,28 +44,36 @@ public class ProductApi {
     }
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody ProductRequest productRequest) {
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest productRequest) {
         Product product = productDTOMapper.toProductForCreation(productRequest);
         Product savedProduct = createProductUseCase.createProduct(product);
-        return ResponseEntity.ok(savedProduct);
+        ProductResponse response = productDTOMapper.toProductResponse(savedProduct);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
         List<Product> products = getAllProductsUseCase.getAll();
-        return ResponseEntity.ok(products);
+        List<ProductResponse> responseList = products.stream()
+                .map(productDTOMapper::toProductResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(responseList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable UUID id) {
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable UUID id) {
         Optional<Product> product = getProductByIdUseCase.getById(id);
-        return product.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return product.map(p -> ResponseEntity.ok(productDTOMapper.toProductResponse(p)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/category/{category}")
-    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable String category) {
+    public ResponseEntity<List<ProductResponse>> getProductsByCategory(@PathVariable String category) {
         List<Product> products = getProductsByCategoryUseCase.getByCategory(category);
-        return ResponseEntity.ok(products);
+        List<ProductResponse> responseList = products.stream()
+                .map(productDTOMapper::toProductResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(responseList);
     }
 
     @DeleteMapping("/{id}")
@@ -73,9 +83,10 @@ public class ProductApi {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable UUID id, @RequestBody ProductRequest productRequest) {
-        Product product = productDTOMapper.toProductForUpdate(productRequest,id);
-        product = updateProductUseCase.update(product);
-        return ResponseEntity.ok(product);
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable UUID id, @RequestBody ProductRequest productRequest) {
+        Product product = productDTOMapper.toProductForUpdate(productRequest, id);
+        Product updatedProduct = updateProductUseCase.update(product);
+        ProductResponse response = productDTOMapper.toProductResponse(updatedProduct);
+        return ResponseEntity.ok(response);
     }
 }

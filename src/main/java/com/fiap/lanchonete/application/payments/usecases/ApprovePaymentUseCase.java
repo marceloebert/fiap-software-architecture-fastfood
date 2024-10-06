@@ -4,6 +4,7 @@ import com.fiap.lanchonete.application.orders.usecases.UpdateOrderStateUseCase;
 import com.fiap.lanchonete.entities.payments.Payment;
 import com.fiap.lanchonete.application.payments.gateways.PaymentGateway;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,12 +18,13 @@ public class ApprovePaymentUseCase {
         this.updateOrderStateUseCase = updateOrderStateUseCase;
     }
 
-    public Payment approvePayment(UUID paymentId, String transactionId) {
+    public Payment approvePayment(UUID paymentId, String transactionId, BigDecimal amount) {
         Optional<Payment> optionalPayment = paymentGateway.findById(paymentId);
 
         if (optionalPayment.isPresent()) {
             Payment payment = optionalPayment.get();
             if (payment.isPending()) {
+                payment.setAmount(amount);
                 payment.approve(transactionId);
                 updateOrderStateUseCase.updateOrderState(payment.getOrderId(), "RECEIVED");
                 return paymentGateway.save(payment);
