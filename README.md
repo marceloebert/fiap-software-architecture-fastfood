@@ -33,6 +33,43 @@ Este projeto é um sistema de pedido desenvolvido em Java Spring Boot, que permi
 - **Produtos e Categorias**: Gestão de produtos com nome, categoria, preço, descrição e imagens.
 - **Pedidos**: Acompanhamento de pedidos em andamento e tempo de espera.
 
+## Entregáveis da 2ª Fase
+
+1. **Arquitetura Kubernates**
+    - Escalabilidade com aumento e diminuição de Pods conforme demanda.
+    - Disponibilizar Banco de Dados em uma pod
+    - Configuração da API no EKS rodando com toda estrutura:
+         - Deployment
+         - Replicaset
+         - Services
+         - Pod
+         - HPA
+           
+![Arquitetura Kubernates](k8s/arquitetura/Desenho-arquitetura-k8s.png)
+
+- Link do video com a demonstração da arquitetura K8s rodando no EKS: https://youtu.be/U7E9I8mxCUY
+
+2. **Aplicação Backend**
+    - Refatoração Clean Architecture
+    - APIs:
+        - Checkout Pedido que deverá receber os produtos solicitados e retornar a identificação do pedido.
+        - Consultar status pagamento pedido, que informa se o pagamento foi aprovado ou não.
+        - Webhook para receber confirmação de pagamento aprovado ou recusado.
+        - A lista de pedidos deverá retorná-los com suas descrições, ordenados com a seguinte regra:
+          - Pronto > Em Preparação > Recebido;
+          - Pedidos mais antigos primeiro e mais novos depois;
+          - Pedidos com status Finalizado não devem aparecer na lista.
+      - Atualizar o status do pedido.      
+    
+3. **Manual de utilização das APIs**
+    - importar no postman collection disponibilizada na raiz do projeto com nome de "FastFood.postman_collection.json"
+     [Baixar Collection FastFood-App](FastFood.postman_collection.json)
+    - 1 - Executar rota "Create Custumer"
+    - 2 - Executar rota "Create Product"
+    - 3 - Executar rota "Create Order" informando o document do custumer criado e o id do product criado
+    - 4 - Executar "Webhook payments" simulado para fazer pagamento do QRCODE informando o id do pagamento gerado na criação do pedido
+    - 5 - Executar "Change Order Status" para alterar o status do pedido 
+
 ## Entregáveis da 1ª Fase
 
 1. **Documentação do Sistema (DDD)**

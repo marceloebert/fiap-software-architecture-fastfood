@@ -5,7 +5,7 @@ metadata:
   labels:
     name: db-config
 data:
-  MYSQL_URL: jdbc:mysql://a66fa3f7b1d0b4e9ab480571a23dfecb-579988863.us-east-1.elb.amazonaws.com:3306/lanchonetedb
+  MYSQL_URL: jdbc:mysql://aa6308248123146b196f7b6fe5909163-382316378.us-east-1.elb.amazonaws.com:3306/lanchonetedb
   MYSQL_USERNAME: sa
   MYSQL_PASSWORD: password
   SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
