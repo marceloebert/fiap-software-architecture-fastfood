@@ -12,6 +12,7 @@ sonarqube {
         property("sonar.organization", "Marcelo Ebert")
         property("sonar.login", System.getenv("SONAR_TOKEN"))
     }
+}
 
 group = "com.fiap"
 version = "0.0.1-SNAPSHOT"
