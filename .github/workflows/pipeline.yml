@@ -43,7 +43,9 @@ jobs:
       - name: Run SonarQube analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew sonar -Dsonar.projectKey=marceloebert_fiap-software-architecture-fastfood
+        run: ./gradlew sonar \
+          -Dsonar.projectKey=marceloebert_fiap-software-architecture-fastfood \
+          -Dsonar.organization=marceloebert
 
   build:
     runs-on: ubuntu-latest
