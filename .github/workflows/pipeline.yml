@@ -16,13 +16,17 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '17' # Ajuste conforme necessário
+          java-version: '17'
 
       - name: Grant execute permission to Gradle Wrapper
         run: chmod +x ./gradlew
 
       - name: Run Gradle Tests
         run: ./gradlew test
+
+      - name: Generate JaCoCo Badge
+        id: jacoco
+        uses: cicirello/jacoco-badge-generator@v2.0.1
 
   code-analysis:
     runs-on: ubuntu-latest
@@ -43,9 +47,9 @@ jobs:
       - name: Run SonarQube analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew sonarqube -Dsonar.projectKey=fiap-software-architecture-fastfood
+        run: ./gradlew sonar -Dsonar.projectKey=fiap-software-architecture-fastfood
 
-  build-and-push:
+  build:
     runs-on: ubuntu-latest
     needs: [unit-test, code-analysis]
     steps:
@@ -64,28 +68,38 @@ jobs:
       - name: Build JAR
         run: ./gradlew build -x test
 
-      - name: Log in to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build and push Docker image
+      - name: Build Docker image
         env:
-          ECR_REPOSITORY: my-ecr-repository # Substitua pelo nome do repositório ECR
+          ECR_REPOSITORY: fiap-software-architecture-fastfood
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
           docker tag $ECR_REPOSITORY:$IMAGE_TAG <aws_account_id>.dkr.ecr.<region>.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
+
+  push:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Log in to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Push Docker image to ECR
+        env:
+          ECR_REPOSITORY: my-ecr-repository
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
           docker push <aws_account_id>.dkr.ecr.<region>.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
 
   update-eks:
     runs-on: ubuntu-latest
-    needs: build-and-push
+    needs: push
     steps:
       - name: Configure kubectl
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          region: <region> # Substitua pela região da AWS (ex.: us-east-1)
+          region: us-east-1
 
       - name: Update Kubernetes Deployment
         run: |
