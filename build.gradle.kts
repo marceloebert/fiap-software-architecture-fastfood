@@ -2,7 +2,16 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.3.1"
 	id("io.spring.dependency-management") version "1.1.5"
+	id("org.sonarqube") version "4.4.1.3373"
 }
+
+sonarqube {
+    properties {
+        property("sonar.projectKey", "Devops-Fastfood")
+        property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.organization", "Marcelo Ebert")
+        property("sonar.login", System.getenv("SONAR_TOKEN"))
+    }
 
 group = "com.fiap"
 version = "0.0.1-SNAPSHOT"
