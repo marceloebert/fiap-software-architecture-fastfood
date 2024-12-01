@@ -71,10 +71,13 @@ jobs:
         run: ./gradlew build -x test
 
       - name: Build Docker image
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}          
         run: |
           docker build -t fiap-software-architecture-fastfood:${{ github.sha }} .
           docker tag fiap-software-architecture-fastfood:${{ github.sha }} \
-          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/fiap-software-architecture-fastfood:${{ github.sha }}
+          $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/fiap-software-architecture-fastfood:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
