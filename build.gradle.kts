@@ -7,7 +7,7 @@ plugins {
 
 sonarqube {
     properties {
-        property("sonar.projectKey", "Devops-Fastfood")
+        property("sonar.projectKey", "fiap-software-architecture-fastfood")
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.organization", "Marcelo Ebert")
         property("sonar.login", System.getenv("SONAR_TOKEN"))
