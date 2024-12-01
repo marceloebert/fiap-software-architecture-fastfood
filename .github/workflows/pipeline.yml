@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main # Apenas para a branch principal (produção)
+      - main 
 
 jobs:
   unit-test:
