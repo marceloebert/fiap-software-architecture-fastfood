@@ -79,6 +79,7 @@ jobs:
         run: |
           echo "AWS_REGION: $AWS_REGION"
           echo "AWS_ACCOUNT_ID: $AWS_ACCOUNT_ID"
+          echo "AWS_REGION: $AWS_REGION"          
           docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
           docker tag $ECR_REPOSITORY:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
 
