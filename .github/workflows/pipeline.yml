@@ -3,73 +3,70 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main # Executa o pipeline para a branch principal (produção)
+      - main # Apenas para a branch principal (produção)
 
 jobs:
   unit-test:
     runs-on: ubuntu-latest
     steps:
-      # 1. Checkout do código
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Configuração do JDK
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '17' # Ajuste para a versão do Java usada no projeto
+          java-version: '17' # Ajuste conforme necessário
 
-      # 3. Executar testes unitários
+      - name: Grant execute permission to Gradle Wrapper
+        run: chmod +x ./gradlew
+
       - name: Run Gradle Tests
         run: ./gradlew test
-        working-directory: ./ # Substitua pelo diretório onde está o arquivo build.gradle, se necessário
-
-      # 4. Gerar relatório de cobertura de código com JaCoCo
-      - name: Generate JaCoCo Badge
-        id: jacoco
-        uses: cicirello/jacoco-badge-generator@v2.0.1
 
   code-analysis:
     runs-on: ubuntu-latest
     needs: unit-test
     steps:
-      # 1. Checkout do código
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Configuração do JDK
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      # 3. Executar análise estática com SonarQube
+      - name: Grant execute permission to Gradle Wrapper
+        run: chmod +x ./gradlew
+
       - name: Run SonarQube analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./gradlew sonarqube -Dsonar.projectKey=Devops-Fiap
-        working-directory: ./ # Substitua pelo diretório onde está o arquivo build.gradle, se necessário
 
   build-and-push:
     runs-on: ubuntu-latest
     needs: [unit-test, code-analysis]
     steps:
-      # 1. Checkout do código
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Compilar e gerar o JAR
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Grant execute permission to Gradle Wrapper
+        run: chmod +x ./gradlew
+
       - name: Build JAR
         run: ./gradlew build -x test
-        working-directory: ./ # Substitua pelo diretório onde está o arquivo build.gradle, se necessário
 
-      # 3. Login no Amazon ECR
       - name: Log in to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
 
-      # 4. Build e Push da imagem Docker
       - name: Build and push Docker image
         env:
           ECR_REPOSITORY: my-ecr-repository # Substitua pelo nome do repositório ECR
@@ -83,7 +80,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-and-push
     steps:
-      # 1. Configurar kubectl para o EKS
       - name: Configure kubectl
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -91,7 +87,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           region: <region> # Substitua pela região da AWS (ex.: us-east-1)
 
-      # 2. Atualizar Deployment no Kubernetes
       - name: Update Kubernetes Deployment
         run: |
           kubectl set image deployment/my-deployment my-container=<aws_account_id>.dkr.ecr.<region>.amazonaws.com/$ECR_REPOSITORY:${{ github.sha }}
