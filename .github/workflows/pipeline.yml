@@ -104,24 +104,13 @@ jobs:
           AWS_REGION: us-east-1
           AWS_ACCOUNT_ID: 731841272399
 
-      - name: Validate AWS CLI Login
+      - name: Login to Amazon ECR
         run: |
-          aws sts get-caller-identity
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 731841272399.dkr.ecr.us-east-1.amazonaws.com
         env:
           AWS_ACCESS_KEY_ID: ASIA2UZJDTJHY77P6XHT
           AWS_SECRET_ACCESS_KEY: a87+CxBu9cg4oDZfDCt4dmqzszbQpVD2zha2sPlr
           AWS_REGION: us-east-1
-
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ASIA2UZJDTJHY77P6XHT
-          aws-secret-access-key: a87+CxBu9cg4oDZfDCt4dmqzszbQpVD2zha2sPlr
-          aws-region: us-east-1
-
-      - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v2
       
       - name: Push Docker image to ECR
         env:
