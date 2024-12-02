@@ -99,18 +99,18 @@ jobs:
           echo "AWS_REGION=${AWS_REGION}"
           echo "AWS_ACCOUNT_ID=${AWS_ACCOUNT_ID}"
         env:
-          AWS_ACCESS_KEY_ID: ASIA2UZJDTJHY77P6XHT
-          AWS_SECRET_ACCESS_KEY: a87+CxBu9cg4oDZfDCt4dmqzszbQpVD2zha2sPlr
-          AWS_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: 'ASIA2UZJDTJHY77P6XHT'
+          AWS_SECRET_ACCESS_KEY: 'a87+CxBu9cg4oDZfDCt4dmqzszbQpVD2zha2sPlr'
+          AWS_REGION: 'us-east-1'
           AWS_ACCOUNT_ID: 731841272399
 
       - name: Login to Amazon ECR
         run: |
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 731841272399.dkr.ecr.us-east-1.amazonaws.com
         env:
-          AWS_ACCESS_KEY_ID: ASIA2UZJDTJHY77P6XHT
-          AWS_SECRET_ACCESS_KEY: a87+CxBu9cg4oDZfDCt4dmqzszbQpVD2zha2sPlr
-          AWS_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: 'ASIA2UZJDTJHY77P6XHT'
+          AWS_SECRET_ACCESS_KEY: 'a87+CxBu9cg4oDZfDCt4dmqzszbQpVD2zha2sPlr'
+          AWS_REGION: 'us-east-1'
       
       - name: Push Docker image to ECR
         env:
