@@ -114,7 +114,7 @@ jobs:
 
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ASIA2UZJDTJHY77P6XHT
           aws-secret-access-key: a87+CxBu9cg4oDZfDCt4dmqzszbQpVD2zha2sPlr
