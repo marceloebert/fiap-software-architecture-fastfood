@@ -91,26 +91,17 @@ jobs:
     
     steps: 
 
-      - name: Debug Secrets
-        run: |
-          echo "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:0:5}****"
-          echo "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}"
-          echo "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}"
-          echo "AWS_REGION=${AWS_REGION}"
-          echo "AWS_ACCOUNT_ID=${AWS_ACCOUNT_ID}"
-        env:
-          AWS_ACCESS_KEY_ID: 'ASIA2UZJDTJHY77P6XHT'
-          AWS_SECRET_ACCESS_KEY: 'a87+CxBu9cg4oDZfDCt4dmqzszbQpVD2zha2sPlr'
-          AWS_REGION: 'us-east-1'
-          AWS_ACCOUNT_ID: 731841272399
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ env.REGION_DEFAULT }}
 
       - name: Login to Amazon ECR
         run: |
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 731841272399.dkr.ecr.us-east-1.amazonaws.com
-        env:
-          AWS_ACCESS_KEY_ID: 'ASIA2UZJDTJHY77P6XHT'
-          AWS_SECRET_ACCESS_KEY: 'a87+CxBu9cg4oDZfDCt4dmqzszbQpVD2zha2sPlr'
-          AWS_REGION: 'us-east-1'
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
       
       - name: Push Docker image to ECR
         env:
