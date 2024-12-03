@@ -82,16 +82,11 @@ jobs:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ secrets.AWS_REGION }}          
         run: |
-          docker build -t fiap-software-architecture-fastfood:${{ github.sha }} .
-          docker tag fiap-software-architecture-fastfood:${{ github.sha }} \
-          $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/fiap-software-architecture-fastfood:${{ github.sha }}
-          docker tag fiap-software-architecture-fastfood:${{ github.sha }} \
-          $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/fiap-software-architecture-fastfood:latest
-
+          docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/fiap-software-architecture-fastfood:latest .      
 
       - name: Save Docker image as file
         run: |
-          docker save ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/fiap-software-architecture-fastfood:${{ github.sha }} -o image.tar
+          docker save -o image.tar ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/fiap-software-architecture-fastfood:latest
 
       - name: Upload Docker image artifact
         uses: actions/upload-artifact@v3
@@ -129,16 +124,7 @@ jobs:
         run: |
           docker load -i image.tar
       
-      - name: Tag Docker image as 'latest'
-        run: |
-          docker tag ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/fiap-software-architecture-fastfood:${{ github.sha }} \
-          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/fiap-software-architecture-fastfood:latest
-
-      - name: Push Docker image to ECR (commit tag)
-        run: |
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/fiap-software-architecture-fastfood:${{ github.sha }}
-
-      - name: Push Docker image to ECR (latest tag)
+      - name: Push Docker image to ECR
         run: |
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/fiap-software-architecture-fastfood:latest
         
@@ -164,5 +150,6 @@ jobs:
 
       - name: Update Kubernetes Deployment
         run: |
-          kubectl set image deployment/api-pod c-api=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.REGION_DEFAULT }}.amazonaws.com/fiap-software-architecture-fastfood:${{ github.sha }}
-          kubectl rollout restart deployment/api-pod      
+          kubectl set image deployment/api-pod c-api=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/fiap-software-architecture-fastfood:latest
+          kubectl rollout status deployment/api-pod --timeout=120s  
+          kubectl rollout restart deployment/api-pod
