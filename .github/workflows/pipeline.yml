@@ -84,6 +84,9 @@ jobs:
           docker build -t fiap-software-architecture-fastfood:${{ github.sha }} .
           docker tag fiap-software-architecture-fastfood:${{ github.sha }} \
           $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/fiap-software-architecture-fastfood:${{ github.sha }}
+          docker tag fiap-software-architecture-fastfood:${{ github.sha }} \
+          $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/fiap-software-architecture-fastfood:latest
+
 
       - name: Save Docker image as file
         run: |
@@ -132,6 +135,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |          
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:latest
       
   update-eks:
     runs-on: ubuntu-latest
@@ -142,13 +146,14 @@ jobs:
       
     steps:
       - name: Configure kubectl
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          region: ${{ secrets.AWS_REGION }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ env.REGION_DEFAULT }}
 
       - name: Update Kubernetes Deployment
         run: |
-          kubectl set image deployment/my-deployment my-container=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/fiap-software-architecture-fastfood:${{ github.sha }}
+          kubectl set image deployment/my-deployment my-container=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/fiap-software-architecture-fastfood:${{ github.sha }}
           kubectl rollout restart deployment/my-deployment
