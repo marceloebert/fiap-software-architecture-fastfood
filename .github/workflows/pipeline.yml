@@ -111,9 +111,8 @@ jobs:
           REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
           REPOSITORY: fiap-software-architecture-fastfood
           IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG  
+        run: |          
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
       
   update-eks:
     runs-on: ubuntu-latest
