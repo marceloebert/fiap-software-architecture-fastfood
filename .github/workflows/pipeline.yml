@@ -7,6 +7,7 @@ on:
 
 env:
   REGION_DEFAULT: us-east-1  
+  CLUSTER_NAME: EKS-fastfood
 
 jobs:
   unit-test:
@@ -157,7 +158,11 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ env.REGION_DEFAULT }}
 
+      - name: Configure kubectl for EKS
+        run: |
+          aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name env.CLUSTER_NAME
+
       - name: Update Kubernetes Deployment
         run: |
-          kubectl set image deployment/my-deployment my-container=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/fiap-software-architecture-fastfood:${{ github.sha }}
-          kubectl rollout restart deployment/my-deployment
+          kubectl set image deployment/api-pod c-api=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.REGION_DEFAULT }}.amazonaws.com/fiap-software-architecture-fastfood:${{ github.sha }}
+          kubectl rollout restart deployment/api-pod      
