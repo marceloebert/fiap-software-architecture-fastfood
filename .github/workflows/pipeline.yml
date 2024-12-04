@@ -151,5 +151,4 @@ jobs:
       - name: Update Kubernetes Deployment
         run: |
           kubectl set image deployment/api-pod c-api=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/fiap-software-architecture-fastfood:latest
-          kubectl rollout status deployment/api-pod --timeout=120s  
-          kubectl rollout restart deployment/api-pod
+          kubectl rollout status deployment/api-pod 
