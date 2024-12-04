@@ -12,7 +12,7 @@ spring:
     # H2 configuration
     datasource:
       #url: jdbc:h2:mem:lanchonetedb
-      url: jdbc:mysql://terraform-20241130022029869400000001.c3sc02woof7e.us-east-1.rds.amazonaws.com:3306/lanchonetedb
+      url: jdbc:mysql://terraform-20241130210826954600000001.cnnroptqg5tu.us-east-1.rds.amazonaws.com:3306/lanchonetedb
       username: sa
       password: password123
       #driverClassName: org.h2.Driver
